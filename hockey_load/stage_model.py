@@ -1,9 +1,9 @@
 """Declare models and relationships."""
 import logging
-from sqlalchemy import Column, DateTime, Integer, String, Text, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_utils import database_exists, create_database, drop_database
 
+from sqlalchemy import Column, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy_utils import create_database, database_exists, drop_database
 
 Base = declarative_base()
 #  configure logging
@@ -38,16 +38,16 @@ class Team(Base):
     __tablename__ = 'team'
 
     team_url = Column(String(255), nullable = True, primary_key = True)
-    conference = Column(String(255), nullable = True)
+    league_conference = Column(String(255), nullable = True)
     conference_division = Column(String(255), nullable = True)
-    team = Column(String(255), nullable = True)
+    team_name = Column(String(255), nullable = True)
 
 
-    def __init__(self, team_url:str, conference:str, conference_division:str, team:str):
+    def __init__(self, team_url:str, league_conference:str, conference_division:str, team_name:str):
         self.team_url = team_url
-        self.conference = conference
+        self.league_conference = league_conference
         self.conference_division = conference_division
-        self.team = team
+        self.team_name = team_name
 
 
 class CareerStatistic(Base):
@@ -93,7 +93,8 @@ def undeploy_schema():
         drop_database(engine.url)
 
 
-def restart_schema():
+def redeploy_schema():
     """drop and recreate"""
     undeploy_schema()
     deploy_schema()
+
