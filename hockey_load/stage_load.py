@@ -1,15 +1,11 @@
 """stage_load"""
+import json
 import logging
 from pathlib import Path
-import json
 
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import sessionmaker
 
-from hockey_load.stage_model import get_engine
-from hockey_load.stage_model import Team
-from hockey_load.stage_model import Player
+from hockey_load.stage_model import Player, Team, get_engine
 
 #  configure logging
 logging.basicConfig(
@@ -58,17 +54,17 @@ def load_teams(input_folder_name:str):
                     target_team = team_from_dict(source_team)
                     session.add(target_team)
 
-            logging.info(f'loaded %s teams', team_count)
+            logging.info('loaded %s teams', team_count)
 
 
 def load_players(input_folder_name:str):
     """load_players"""
-    logging.debug(f'loaded players from %s, input_folder_name')
+    logging.debug('loaded players from %s, input_folder_name')
 
     with Session(get_engine()) as session:
         with session.begin():
             row_count = session.query(Player).delete()
-            logging.info(f'removed %s players', row_count)
+            logging.info('removed %s players', row_count)
 
 
         input_folder = Path(input_folder_name)
@@ -81,7 +77,7 @@ def load_players(input_folder_name:str):
                     target_player = player_from_dict(source_player)
                     session.add(target_player)
 
-            logging.info(f'loaded %s players', player_count)
+            logging.info('loaded %s players', player_count)
 
 
 

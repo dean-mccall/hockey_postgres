@@ -1,9 +1,14 @@
 """test cases"""
 # import hockey_load.stage_model
-from hockey_load.stage_load import team_from_dict
-from hockey_load.stage_load import player_from_dict
-from hockey_load.stage_load import load_teams
-from hockey_load.stage_load import load_players
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+
+from hockey_load.stage_load import (load_players, load_teams, player_from_dict,
+                                    team_from_dict)
+from hockey_load.stage_model import Player, Team, get_engine
+
+EXPECTED_TEAM_COUNT = 32
+MINIMUM_PLAYER_COUNT = 800
 
 
 def test_team_from_dict():
@@ -27,6 +32,12 @@ def test_team_from_dict():
 def test_load_teams():
     """test_load_teams"""
     load_teams('/Users/dean.mccall/tmp/json/team')
+
+    with Session(get_engine()) as session:
+        with session.begin():
+            row_count = session.query(Team).count()
+            assert row_count == EXPECTED_TEAM_COUNT
+
 
 
 def test_player_from_dict():
@@ -63,3 +74,8 @@ def test_player_from_dict():
 def test_load_players():
     """test_load_players"""
     load_players('/Users/dean.mccall/tmp/json/player')
+
+    with Session(get_engine()) as session:
+        with session.begin():
+            row_count = session.query(Player).count()
+            assert row_count >= MINIMUM_PLAYER_COUNT
