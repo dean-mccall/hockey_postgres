@@ -30,6 +30,33 @@ class Player(Base):
     nhl_draft = Column(String(255), nullable = True)
     playing_career = Column(String(255), nullable = True)
 
+    def __init__(
+            self,
+            player_name,
+            player_url,
+            born,
+            height,
+            weight,
+            position,
+            shoots,
+            nhl_team,
+            national_team,
+            nhl_draft,
+            playing_career):
+        self.player_name = player_name
+        self.player_url = player_url
+        self.born = born
+        self.height = height
+        self.weight = weight
+        self.position = position
+        self.shoots = shoots
+        self.nhl_team = nhl_team
+        self.national_team = national_team
+        self.nhl_draft = nhl_draft
+        self.playing_career = playing_career
+
+
+
 
 
 class Team(Base):
@@ -83,14 +110,14 @@ def deploy_schema():
     if not database_exists(engine.url):
         create_database(engine.url)
         Base.metadata.create_all(engine)
-
-    logging.debug('deploy_schema done')
+    logging.debug('schema deployed')
 
 def undeploy_schema():
     """undeploy schema"""
     engine = get_engine()
     if database_exists(engine.url):
         drop_database(engine.url)
+    logging.info('schema undeployed')
 
 
 def redeploy_schema():
