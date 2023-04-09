@@ -41,20 +41,25 @@ def load_teams(input_folder_name:str):
     """load_teams"""
     logging.debug('loading files from {input_folder_name}')
 
-
-    Session = sessionmaker(bind = get_engine())
-    session = Session()
-
-
     input_folder = Path(input_folder_name)
-    for team_file in input_folder.iterdir():
-        with open(team_file, encoding = 'utf8') as team_json_file:
-            source_team = json.load(team_json_file)
-            target_team = team_from_dict(source_team)
-            session.add(target_team)
+    with Session(get_engine()) as session:
+        with session.begin():
+            deleted_team_count = session.query(Team).delete()
+            logging.info('removed %s teams', deleted_team_count)
 
-    session.commit()
-    session.close()
+
+        with session.begin():
+            team_count = 0
+            for team_file in input_folder.iterdir():
+                team_count = team_count + 1
+                with open(team_file, encoding = 'utf8') as team_json_file:
+                    source_team = json.load(team_json_file)
+                    target_team = team_from_dict(source_team)
+                    session.add(target_team)
+
+            logging.info('loaded %s teams', team_count)
+
+
 
 
 
