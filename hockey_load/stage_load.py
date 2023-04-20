@@ -14,8 +14,6 @@ logger = logging.getLogger(__name__)
 
 def team_from_dict(source: dict) -> Team:
     """translate dictionary insert"""
-    logger.debug('mapping dictionary to columns')
-
     return Team(
         team_url = source.get('team_url'),
         league_conference = source.get('league_conference'),
@@ -132,4 +130,4 @@ def load_career_statistics(input_folder_name:str):
                             session.add(target_career_statistic)
 
 
-            logger.info('loaded %s career_statistics')
+            logger.info('loaded %s career_statistics', career_statistic_count)
