@@ -3,9 +3,10 @@
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from hockey_load.stage_load import (load_players, load_teams, player_from_dict,
+from hockey_load.stage_load import (load_career_statistics, load_players,
+                                    load_teams, player_from_dict,
                                     team_from_dict)
-from hockey_load.stage_model import Player, Team, get_engine
+from hockey_load.stage_model import CareerStatistic, Player, Team, get_engine
 
 EXPECTED_TEAM_COUNT = 32
 MINIMUM_PLAYER_COUNT = 800
@@ -57,7 +58,6 @@ def test_player_from_dict():
     }
 
     player = player_from_dict(source)
-
     assert player.player_name == source['player_name']
     assert player.player_url == source['player_url']
     assert player.born == source['born']
@@ -79,3 +79,14 @@ def test_load_players():
         with session.begin():
             row_count = session.query(Player).count()
             assert row_count >= MINIMUM_PLAYER_COUNT
+
+
+def test_load_career_statistics():
+    """test_load_career_statistics"""
+    load_career_statistics('/Users/dean.mccall/tmp/json/player')
+
+    with Session(get_engine()) as session:
+        with session.begin():
+            row_count = session.query(CareerStatistic).count()
+            assert row_count >= MINIMUM_PLAYER_COUNT
+
