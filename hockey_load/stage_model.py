@@ -4,10 +4,15 @@ import logging
 from sqlalchemy import Column, String, Integer, Identity, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database, database_exists, drop_database
+from sqlalchemy import MetaData
+from sqlalchemy.schema import CreateSchema
+from sqlalchemy import event
 
 logger = logging.getLogger(__name__)
 
-Base = declarative_base()
+SCHEMA_NAME = 'stage'
+metadata = MetaData(schema = SCHEMA_NAME)
+Base = declarative_base(metadata = metadata)
 
 
 class Player(Base):
@@ -142,10 +147,15 @@ def get_engine():
 def deploy_schema():
     """deploy schema"""
     engine = get_engine()
+
     if not database_exists(engine.url):
         create_database(engine.url)
-        Base.metadata.create_all(engine)
-    logger.debug('schema deployed')
+        with engine.connect() as connection:
+            with connection.begin():
+                connection.execute(CreateSchema(SCHEMA_NAME))
+
+    Base.metadata.create_all(engine)
+    logger.info('schema deployed')
 
 def undeploy_schema():
     """undeploy schema"""
@@ -159,4 +169,5 @@ def redeploy_schema():
     """drop and recreate"""
     undeploy_schema()
     deploy_schema()
+
 
