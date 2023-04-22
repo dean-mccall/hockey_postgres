@@ -3,3 +3,6 @@ psycopg2
 sqlalchemy-utils
 pytest
 dbt-postgres
+DataProfiler
+ipykernel
+pandas_profiling

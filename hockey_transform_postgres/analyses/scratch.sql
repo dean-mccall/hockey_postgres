@@ -56,5 +56,50 @@ FROM wikipedia.players
 SELECT *
 FROM wikpedia.career_statistics
 
+WITH cleaned_career_statistics AS
+(
+    SELECT 
+        career_statistic_id,
+        player_url,
+        season,
+        CAST(REGEXP_REPLACE(team, '[\u000a]', '', 'g') AS VARCHAR(255)) team,
+        league,
+        CAST(regular_season_games_played_count AS INTEGER) regular_season_games_played_count,
+        CAST(regular_season_goal_count AS INTEGER) regular_season_goal_count,
+        CAST(regular_season_assist_count AS INTEGER) regular_season_assist_count,
+        CAST(regular_season_point_count AS INTEGER) regular_season_point_count,
+        CAST(regular_season_penalty_minute_count AS INTEGER) regular_season_penalty_minute_count,
+        CAST(playoff_season_games_played_count AS INTEGER) playoff_season_games_played_count,
+        CAST(playoff_season_goal_count AS INTEGER) playoff_season_goal_count,
+        CAST(playoff_season_assist_count AS INTEGER) playoff_season_assist_count,
+        CAST(playoff_season_point_count AS INTEGER) playoff_season_point_count,
+        CAST(playoff_season_penalty_minute_count AS INTEGER) playoff_season_penalty_minute_count
+    FROM wikipedia.career_statistics
+)
 SELECT *
-FROM wikpedia.career_statistics
+FROM cleaned_career_statistics
+
+
+
+SELECT COUNT(*) FROM (SELECT league, COUNT(*)
+FROM public.stg_wikipedia__career_statistics
+GROUP BY league
+ORDER BY COUNT(*) DESC) x
+
+SELECT *
+FROM stg_wikipedia__career_statistics
+WHERE player_url = 'https://en.wikipedia.org/wiki/nathan_mackinnon'
+ORDER BY season ASC
+
+SELECT
+    player_url,
+    league,
+    MIN(season) rookie_season,
+    MIN(career_statistic_id) rookie_season_career_statistic_id
+FROM stg_wikipedia__career_statistics
+WHERE player_url = 'https://en.wikipedia.org/wiki/nathan_mackinnon'
+GROUP BY
+    player_url,
+    league
+
+SELECT * FROM public.stg_wikipedia__career_statistics

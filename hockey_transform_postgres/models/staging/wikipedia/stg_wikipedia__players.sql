@@ -3,7 +3,7 @@ WITH cleaned_players AS
     SELECT
         player_id,
         player_name,
-        player_url,
+        LOWER(player_url) player_url,
         CAST(born AS DATE) born,
         CAST(height AS INTEGER) height_centimeters,
         ROUND((CAST(height AS INTEGER) * .393701), 2) height_inches,

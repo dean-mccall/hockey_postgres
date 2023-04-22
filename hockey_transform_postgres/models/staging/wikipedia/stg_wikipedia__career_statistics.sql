@@ -2,10 +2,10 @@ WITH cleaned_career_statistics AS
 (
     SELECT
         career_statistic_id,
-        player_url,
+        LOWER(player_url) player_url,
         season,
         CAST(REGEXP_REPLACE(team, '[\u000a]', '', 'g') AS VARCHAR(255)) team,
-        league,
+        UPPER(league) league,
         CAST(regular_season_games_played_count AS INTEGER) regular_season_games_played_count,
         CAST(regular_season_goal_count AS INTEGER) regular_season_goal_count,
         CAST(regular_season_assist_count AS INTEGER) regular_season_assist_count,
