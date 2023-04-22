@@ -4,4 +4,16 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "hockey_postgres",
+            "database": "hockey",
+            "username": "dean.mccall",
+            "password": ""
+        }
+    ],
 }

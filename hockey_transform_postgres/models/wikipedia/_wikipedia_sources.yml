@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: wikipedia
+    database: hockey
+    schema: wikipedia
+    tables:
+      - name: teams
+      - name: players
+      - name: career_statistics

@@ -3,10 +3,10 @@
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from hockey_load.stage_load import (load_career_statistics, load_players,
+from hockey_load.wikipedia_load import (load_career_statistics, load_players,
                                     load_teams, player_from_dict,
                                     team_from_dict)
-from hockey_load.stage_model import CareerStatistic, Player, Team, get_engine
+from hockey_load.wikipedia_model import CareerStatistic, Player, Team, get_engine
 
 EXPECTED_TEAM_COUNT = 32
 MINIMUM_PLAYER_COUNT = 800

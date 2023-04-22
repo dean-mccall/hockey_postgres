@@ -5,7 +5,7 @@ from pathlib import Path
 
 from sqlalchemy.orm import Session
 
-from hockey_load.stage_model import CareerStatistic, Player, Team, get_engine
+from hockey_load.wikipedia_model import CareerStatistic, Player, Team, get_engine
 
 #  configure logging
 logger = logging.getLogger(__name__)

@@ -2,3 +2,4 @@ sqlalchemy
 psycopg2
 sqlalchemy-utils
 pytest
+dbt-postgres

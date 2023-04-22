@@ -6,11 +6,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database, database_exists, drop_database
 from sqlalchemy import MetaData
 from sqlalchemy.schema import CreateSchema
-from sqlalchemy import event
+from sqlalchemy.sql import text
+from sqlalchemy.exc import ProgrammingError
 
 logger = logging.getLogger(__name__)
 
-SCHEMA_NAME = 'stage'
+SCHEMA_NAME = 'wikipedia'
 metadata = MetaData(schema = SCHEMA_NAME)
 Base = declarative_base(metadata = metadata)
 
@@ -18,7 +19,7 @@ Base = declarative_base(metadata = metadata)
 class Player(Base):
     """player"""
 
-    __tablename__ = 'player'
+    __tablename__ = 'players'
 
     player_id = Column(Integer, Identity(), primary_key = True)
     player_name = Column(String(255), nullable = True)
@@ -65,7 +66,7 @@ class Player(Base):
 class Team(Base):
     """team"""
 
-    __tablename__ = 'team'
+    __tablename__ = 'teams'
 
     team_id = Column(Integer, Identity(), primary_key = True)
     team_url = Column(String(255), nullable = True)
@@ -82,9 +83,9 @@ class Team(Base):
 
 
 class CareerStatistic(Base):
-    """career_statistic"""
+    """career_statistics"""
 
-    __tablename__ = 'career_statistic'
+    __tablename__ = 'career_statistics'
 
     career_statistic_id = Column(Integer, Identity(), primary_key = True)
     player_url = Column(String(255), nullable = True)
@@ -154,7 +155,36 @@ def deploy_schema():
             with connection.begin():
                 connection.execute(CreateSchema(SCHEMA_NAME))
 
+            #  create database roles
+            with connection.begin():
+                try:
+                    connection.execute(text('CREATE ROLE hockey_ro'))
+                except ProgrammingError as e:
+                    #  swallow this error.  the object exists
+                    pass
+
+            with connection.begin():
+                try:
+                    connection.execute(text('CREATE ROLE hockey_rw'))
+                except ProgrammingError as e:
+                    #  swallow this error.  the object exists
+                    pass
+
+            with connection.begin():
+                connection.execute(text(f'GRANT USAGE ON SCHEMA {SCHEMA_NAME} TO hockey_ro'))
+                connection.execute(text(f'GRANT USAGE ON SCHEMA {SCHEMA_NAME} TO hockey_ro'))
+
+
     Base.metadata.create_all(engine)
+
+
+    #  grant permissions to the roles
+    with engine.connect() as connection:
+        with connection.begin():
+            connection.execute(text(f'GRANT SELECT ON ALL TABLES IN SCHEMA {SCHEMA_NAME} TO hockey_ro'))
+            connection.execute(text(f'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA {SCHEMA_NAME} TO hockey_rw'))
+
+
     logger.info('schema deployed')
 
 def undeploy_schema():

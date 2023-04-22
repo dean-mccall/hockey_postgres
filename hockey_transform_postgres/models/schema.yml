@@ -1,0 +1,20 @@
+
+version: 2
+
+models:
+  - name: dim_team
+    description: "A starter dbt model"
+    columns:
+      - name: team_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+      - name: team_url
+        description: "natural key"
+        tests:
+          - unique
+          - not_null
+      - name: league_conference
+      - name: conference_division
+      - name: team_name
