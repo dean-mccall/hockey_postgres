@@ -1,4 +1,4 @@
-WITH cleaned_team AS
+WITH final AS
 (
     SELECT
         team_id,
@@ -9,4 +9,4 @@ WITH cleaned_team AS
     FROM {{ source('wikipedia','teams') }}
 )
 SELECT *
-FROM cleaned_team
+FROM final

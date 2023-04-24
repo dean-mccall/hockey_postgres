@@ -42,3 +42,6 @@ models:
         materialized: view
       fact:
         materialized: view
+
+seeds:
+  hockey_transform_postgres:

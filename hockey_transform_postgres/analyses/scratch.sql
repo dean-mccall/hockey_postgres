@@ -102,4 +102,92 @@ GROUP BY
     player_url,
     league
 
+SELECT * FROM public.int_players_rookie_season
+
 SELECT * FROM public.stg_wikipedia__career_statistics
+
+SELECT *
+FROM public.int_players_rookie_season
+ORDER BY player_url, league, rookie_season
+
+SELECT *
+FROM public.fact_career_statistics
+WHERE rookie_season_indicator = 'Y'
+ORDER BY player_url, season
+
+SELECT team, league, season, rookie_season_indicator, rookie_nhl_season_indicator, pre_nhl_season_indicator
+FROM fact_career_statistics
+WHERE player_url = LOWER('https://en.wikipedia.org/wiki/Andrew_Cogliano')
+AND rookie_season_indicator = 'Y'
+AND (pre_nhl_season_indicator = 'Y'
+OR rookie_nhl_season_indicator = 'Y')
+ORDER BY season
+
+SELECT 
+    'WHEN league = '''||league||''' THEN '
+FROM dim_leagues
+ORDER BY league ASC
+
+SELECT *
+FROM stg_wikipedia__career_statistics
+WHERE league = 'ALLSV'
+
+SELECT *
+FROM stg_wikipedia__players
+WHERE player_url = 'https://en.wikipedia.org/wiki/Thomas_Greiss'
+
+SELECT *
+fROM public.tier
+
+SELECT * FROM public.league_tier
+
+SELECT * FROM int_player_rookie_tier_seasons
+WHERE player_url = 'https://en.wikipedia.org/wiki/Nathan_MacKinnon'
+
+SELECT * FROM dim_leagues
+
+SELECT *
+FROM int_player_rookie_tier_seasons
+
+SELECT 
+    fcs.season,
+    fcs.team,
+    fcs.league,
+    dl.tier,
+    fcs.rookie_league_season_indicator,
+    fcs.rookie_nhl_season_indicator,
+    fcs.pre_nhl_season_indicator,
+    fcs.rookie_tier_season_indicator
+FROM fact_career_statistics fcs
+INNER JOIN dim_leagues dl 
+    ON fcs.league = dl.league
+WHERE fcs.player_url = 'https://en.wikipedia.org/wiki/Nathan_MacKinnon'
+AND fcs.rookie_tier_season_indicator = 'Y'
+
+SELECT COUNT(*) FROM stg_wikipedia__career_statistics
+
+SELECT COUNT(*) FROM fact_career_statistics
+
+SELECT * FROM dim_leagues
+
+WITH leagues AS
+(
+    SELECT DISTINCT league
+    FROM stg_wikipedia__career_statistics
+),
+league_tiers AS
+(
+    SELECT *
+    FROM league_tiers
+),
+final AS
+(
+    SELECT 
+        leagues.league,
+        league_tiers.tier
+    FROM leagues
+    LEFT OUTER JOIN league_tiers
+        ON leagues.league = league_tiers.league
+)
+SELECT *
+FROM final

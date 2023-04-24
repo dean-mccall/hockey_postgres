@@ -1,9 +1,9 @@
-WITH cleaned_players AS
+WITH final AS
 (
     SELECT
         player_id,
         player_name,
-        LOWER(player_url) player_url,
+        player_url,
         CAST(born AS DATE) born,
         CAST(height AS INTEGER) height_centimeters,
         ROUND((CAST(height AS INTEGER) * .393701), 2) height_inches,
@@ -39,5 +39,5 @@ WITH cleaned_players AS
     FROM {{ source('wikipedia','players') }}
 )
 SELECT *
-FROM cleaned_players
+FROM final
 

@@ -1,11 +1,11 @@
-WITH cleaned_career_statistics AS
+WITH final AS
 (
     SELECT
         career_statistic_id,
-        LOWER(player_url) player_url,
+        player_url player_url,
         season,
         CAST(REGEXP_REPLACE(team, '[\u000a]', '', 'g') AS VARCHAR(255)) team,
-        UPPER(league) league,
+        CAST(UPPER(league) AS VARCHAR(255)) league,
         CAST(regular_season_games_played_count AS INTEGER) regular_season_games_played_count,
         CAST(regular_season_goal_count AS INTEGER) regular_season_goal_count,
         CAST(regular_season_assist_count AS INTEGER) regular_season_assist_count,
@@ -19,5 +19,5 @@ WITH cleaned_career_statistics AS
     FROM {{ source('wikipedia','career_statistics') }}
 )
 SELECT *
-FROM cleaned_career_statistics
+FROM final
 

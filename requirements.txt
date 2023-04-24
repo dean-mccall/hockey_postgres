@@ -6,3 +6,6 @@ dbt-postgres
 DataProfiler
 ipykernel
 pandas_profiling
+plotly
+numpy
+notebook

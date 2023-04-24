@@ -2,15 +2,15 @@
 version: 2
 
 models:
-  - name: dim_team
+  - name: dim_players
     description: "A starter dbt model"
     columns:
-      - name: team_id
+      - name: player_id
         description: "The primary key for this table"
         tests:
           - unique
           - not_null
-      - name: team_url
+      - name: player_url
         description: "natural key"
         tests:
           - unique
@@ -18,3 +18,27 @@ models:
       - name: league_conference
       - name: conference_division
       - name: team_name
+
+  - name: int_player_rookie_nhl_seasons
+    columns:
+      - name: player_url
+        tests:
+        - unique
+        - not_null
+
+
+  - name: stg_wikipedia__career_statistics
+    columns:
+      - name: career_statistic_id
+        tests:
+        - unique
+        - not_null
+      - name: player_url
+        tests:
+        - not_null
+      - name: league
+        tests:
+        - not_null
+      - name: team
+        tests:
+        - not_null
