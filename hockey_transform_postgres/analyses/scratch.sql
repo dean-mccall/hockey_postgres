@@ -150,6 +150,7 @@ SELECT *
 FROM int_player_rookie_tier_seasons
 
 SELECT 
+    fcs.player_url,
     fcs.season,
     fcs.team,
     fcs.league,
@@ -161,10 +162,36 @@ SELECT
 FROM fact_career_statistics fcs
 INNER JOIN dim_leagues dl 
     ON fcs.league = dl.league
-WHERE fcs.player_url = 'https://en.wikipedia.org/wiki/Nathan_MacKinnon'
+WHERE fcs.player_url IN ('https://en.wikipedia.org/wiki/Connor_McDavid', 'https://en.wikipedia.org/wiki/Nathan_MacKinnon', 'https://en.wikipedia.org/wiki/Cale_Makar')
 AND fcs.rookie_tier_season_indicator = 'Y'
+ORDER BY
+    fcs.player_url ASC,
+    fcs.season ASC
 
-SELECT COUNT(*) FROM stg_wikipedia__career_statistics
+SELECT *
+FROM int_player_rookie_tier_seasons
+WHERE player_url = 'https://en.wikipedia.org/wiki/Cale_Makar'
+
+SELECT 
+
+SELECT *
+FROM int_player_rookie_tier_seasons
+WHERE player_url = 'https://en.wikipedia.org/wiki/Cale_Makar'
+
+SELECT *
+FROM fact_career_statistics
+WHERE player_url = 'https://en.wikipedia.org/wiki/Cale_Makar'
+ORDER BY season ASC
+
+SELECT 
+FROM public.fact_career_statistics cs
+
+
+SELECT career_statistic_id
+FROM fact_career_statistics
+MINUS
+SELECT career_statistic_id
+FROM {{ ref('stg_wikipedia__career_statistics') }}
 
 SELECT COUNT(*) FROM fact_career_statistics
 
